@@ -1,40 +1,43 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+bool cmp(pair<char, int>a, pair<char, int>b){
+    if(a.second == b.second){
+        return a.first < b.first;
+    }
+    return a.second > b.second;
+}
+
 int main(){
     int line;
-    string empty_str, str;
-    map<char, int> counts;
+    char trash;
+    string str;
+    vector<int> counts(26, 0);
+    vector<pair<char, int>> counts_p;
     cin >> line;
-    getline(cin, empty_str);
+    trash = getchar();
+
     for(int i = 0; i < line; i++){
         getline(cin, str);
-        istringstream iss(str);
-        string first;
-        while(iss >> first){
-            for(char c: first){
-                char ch = static_cast<char>(toupper(static_cast<unsigned char>(c)));
-                if(65 <= ch && ch <= 97){
-                    if(counts.find(ch) == counts.end()){
-                        counts[ch] = 1;
-                    }
-                    else{
-                        counts[ch] += 1;
-                    }
-                }
+
+        for(char c: str){
+            char up_c = toupper(c);
+            if('A' <= up_c && up_c <= 'Z'){
+                counts[up_c-'A'] += 1;
             }
         }
     }
-    vector<pair<char, int>> vec_counts(counts.begin(), counts.end());
-    sort(vec_counts.begin(), vec_counts.end(), [](const auto&a, const auto&b){
-            if (a.second == b.second){
-                return static_cast<int>(a.first) < static_cast<int>(b.first);
-            }
-            return a.second > b.second;
-         }
-    );
-    for(auto it = vec_counts.begin(); it != vec_counts.end(); it++){
-        cout << it->first << " " << it->second << endl;
+
+    for(int i = 0; i < 26; i++){
+        if(counts[i] == 0) continue;
+        counts_p.push_back(make_pair(char('A'+i), counts[i]));
     }
+
+    sort(counts_p.begin(), counts_p.end(), cmp);
+
+    for(int i = 0; i < counts_p.size(); i++){
+        cout << counts_p[i].first << " " << counts_p[i].second << endl;
+    }
+
     return 0;
 }
